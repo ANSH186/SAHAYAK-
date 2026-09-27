@@ -1,0 +1,34 @@
+# Environment variables & secrets
+.env
+*.env
+.env.*
+.agents/
+
+# Python & Virtual Envs
+.venv/
+backend/.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.sqlite3
+
+# Node & Build
+node_modules/
+dist/
+scratch/
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+
+# Media uploads
+uploads/
+frontend.zip
+*.zip
+.vercel/
+frontend/dist/
+
+

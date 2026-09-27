@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+@theme {
+  /* SAHAYAK Palette */
+  --color-cream: #F6F1E7;
+  --color-cream-soft: #FBF8F1;
+  --color-cream-warm: #EFE9DC;
+  --color-cream-dark: #E5DDCB;
+
+  --color-sahayak-cream: #F6F1E7;
+  --color-sahayak-cream-soft: #FBF8F1;
+  --color-sahayak-cream-warm: #EFE9DC;
+  --color-sahayak-cream-dark: #E5DDCB;
+
+  --color-primary: #17458C;
+  --color-primary-dark: #032673;
+  --color-primary-light: #3766A5;
+  --color-primary-600: #0349AC;
+  --color-primary-500: #0375DE;
+
+  --color-sahayak-blue: #17458C;
+  --color-sahayak-blue-deep: #032673;
+  --color-sahayak-blue-mid: #0349AC;
+  --color-sahayak-blue-light: #3766A5;
+  --color-sahayak-blue-sky: #05B6F3;
+  --color-sahayak-blue-ice: #E5F5FA;
+
+  --color-sky: #05B6F3;
+  --color-sky-soft: #ACD8EA;
+  --color-sky-ice: #E5F5FA;
+
+  --color-gold: #DDAD4B;
+  --color-gold-light: #E8C978;
+  --color-gold-soft: #F5E8C5;
+  --color-gold-dark: #C89032;
+
+  --color-sahayak-gold: #DDAD4B;
+  --color-sahayak-gold-light: #E8C978;
+  --color-sahayak-gold-soft: #F5E8C5;
+  --color-sahayak-gold-dark: #C89032;
+
+  --color-brown: #98735C;
+  --color-brown-dark: #6B4634;
+  --color-brown-soft: #E8D8CB;
+
+  --color-sahayak-brown: #98735C;
+  --color-sahayak-brown-dark: #6B4634;
+  --color-sahayak-brown-soft: #E8D8CB;
+
+  --color-sahayak-success: #3F8F68;
+  --color-sahayak-success-soft: #DCEFE5;
+  --color-sahayak-warning: #C89032;
+  --color-sahayak-warning-soft: #F5E8C5;
+  --color-sahayak-error: #B84F45;
+  --color-sahayak-error-soft: #F3DEDA;
+
+  --color-sahayak-text: #18304A;
+  --color-sahayak-text-primary: #18304A;
+  --color-sahayak-secondary: #5F6B76;
+  --color-sahayak-text-secondary: #5F6B76;
+  --color-sahayak-muted: #89929A;
+  --color-sahayak-text-muted: #89929A;
+  --color-sahayak-text-disabled: #B7BAB9;
+
+  --font-heading: 'Manrope', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --shadow-neumorph: 4px 5px 12px rgba(184, 168, 145, 0.22), -3px -3px 8px rgba(255, 255, 255, 0.95);
+  --shadow-neumorph-sm: 2px 3px 6px rgba(184, 168, 145, 0.18), -2px -2px 5px rgba(255, 255, 255, 0.9);
+  --shadow-neumorph-lg: 6px 8px 18px rgba(180, 164, 140, 0.28), -4px -4px 10px rgba(255, 255, 255, 1);
+  --shadow-neumorph-inset: inset 3px 3px 6px rgba(184, 168, 145, 0.35), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  --shadow-neu-card: 5px 6px 14px rgba(180, 164, 140, 0.28), -4px -4px 10px rgba(255, 255, 255, 0.95);
+  --shadow-neu-flat: 4px 4px 10px rgba(184, 168, 145, 0.35), -3px -3px 8px rgba(255, 255, 255, 0.95);
+  --shadow-neu-sm: 2px 2px 5px rgba(184, 168, 145, 0.3), -2px -2px 5px rgba(255, 255, 255, 0.9);
+  --shadow-neu-gold: 0 4px 14px rgba(221, 173, 75, 0.35);
+}
+
+/* =========================================
+   BASE STYLES
+   ========================================= */
+
+body {
+  background-color: #F6F1E7;
+  color: #18304A;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F6F1E7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D5CBBF;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #17458C;
+}
+
+/* =========================================
+   WARM NEUMORPHIC UTILITIES
+   ========================================= */
+
+.neu-card {
+  background-color: #FBF8F1;
+  border: 1px solid rgba(239, 233, 220, 0.85);
+  box-shadow: 4px 5px 12px rgba(184, 168, 145, 0.22), -3px -3px 8px rgba(255, 255, 255, 0.95);
+  border-radius: 1rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.neu-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 8px 18px rgba(180, 164, 140, 0.28), -4px -4px 10px rgba(255, 255, 255, 1);
+}
+
+.neu-inset {
+  background-color: #EFE9DC;
+  box-shadow: inset 3px 3px 6px rgba(184, 168, 145, 0.35), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(214, 203, 184, 0.4);
+  border-radius: 0.75rem;
+}
+
+.neu-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #032673, #17458C);
+  color: #FFFFFF;
+  font-weight: 700;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(3, 38, 115, 0.25), 0 2px 4px rgba(3, 38, 115, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.neu-btn-primary:hover {
+  background: linear-gradient(135deg, #0349AC, #0375DE);
+  box-shadow: 0 6px 16px rgba(3, 73, 172, 0.35);
+  transform: translateY(-1px);
+}
+
+.neu-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FBF8F1;
+  color: #18304A;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(152, 115, 92, 0.25);
+  box-shadow: 2px 3px 6px rgba(184, 168, 145, 0.18), -2px -2px 5px rgba(255, 255, 255, 0.9);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.neu-btn-secondary:hover {
+  border-color: #17458C;
+  color: #17458C;
+  transform: translateY(-1px);
+}
+
+/* Badge helpers */
+.badge-lost {
+  background-color: #F3DEDA;
+  color: #B84F45;
+  border: 1px solid rgba(184, 79, 69, 0.25);
+}
+
+.badge-found {
+  background-color: #DCEFE5;
+  color: #3F8F68;
+  border: 1px solid rgba(63, 143, 104, 0.25);
+}
+
+/* Leaflet map styles */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  z-index: 10;
+  font-family: 'Inter', sans-serif;
+}

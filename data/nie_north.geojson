@@ -1,0 +1,233 @@
+{
+  "type": "FeatureCollection",
+  "name": "NIE North",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "nie north map",
+        "description": "National Institute of Engineering - North Campus Boundary",
+        "location": "Mysuru, Karnataka, India"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              76.5857619,
+              12.3708164,
+              0
+            ],
+            [
+              76.5876098,
+              12.3704832,
+              0
+            ],
+            [
+              76.5878755,
+              12.3702353,
+              0
+            ],
+            [
+              76.5886288,
+              12.3702106,
+              0
+            ],
+            [
+              76.5885008,
+              12.3710493,
+              0
+            ],
+            [
+              76.5874306,
+              12.3709666,
+              0
+            ],
+            [
+              76.5874824,
+              12.3719324,
+              0
+            ],
+            [
+              76.5871614,
+              12.3724239,
+              0
+            ],
+            [
+              76.5870053,
+              12.3741434,
+              0
+            ],
+            [
+              76.58619,
+              12.3750691,
+              0
+            ],
+            [
+              76.5840391,
+              12.3709411,
+              0
+            ],
+            [
+              76.5857619,
+              12.3708164,
+              0
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790450855225",
+        "name": "Gopi's Canteen",
+        "category": "Food",
+        "color": "#f59e0b",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5866563,
+          12.3708848,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790450932854",
+        "name": "CoCa-Cola Canteen",
+        "category": "Food",
+        "color": "#ef4444",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5849526,
+          12.3709261,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790450977231",
+        "name": "NIE Food Court",
+        "category": "Food",
+        "color": "#10b981",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5856585,
+          12.3728602,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790451321385",
+        "name": "MB block",
+        "category": "Academic",
+        "color": "#00f0ff",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5869772,
+          12.3713084,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790451632842",
+        "name": "NIE Library",
+        "category": "Library",
+        "color": "#0ea5e9",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.587176,
+          12.3715731,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790451759733",
+        "name": "BUS Parking",
+        "category": "Facility",
+        "color": "#eab308",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5842074,
+          12.3709634,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790451802158",
+        "name": "Bike parking",
+        "category": "Library",
+        "color": "#64748b",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5845615,
+          12.3709215,
+          0
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "place_1790451989158",
+        "name": "SB block (LAB building)",
+        "category": "Library",
+        "color": "#84cc16",
+        "badge": "",
+        "description": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          76.5847868,
+          12.3714376,
+          0
+        ]
+      }
+    }
+  ]
+}

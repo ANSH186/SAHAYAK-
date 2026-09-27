@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIE North Campus — Satellite Place Editor</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo">NIE</div>
+      <div class="brand-titles">
+        <h1>NIE North Campus</h1>
+        <p>Real Satellite &bull; Live Code Sync &bull; Mysuru</p>
+      </div>
+    </div>
+
+    <!-- Actions & Toolbar -->
+    <div class="header-actions">
+      <!-- Auto-Save Status Indicator -->
+      <div id="saveStatusBadge" class="save-status-badge">
+        <span class="save-dot"></span>
+        <span id="saveStatusText">Code Synced</span>
+      </div>
+
+      <!-- Add Place Mode Button -->
+      <button id="addPlaceModeBtn" class="nav-btn btn-add" title="Click on the map to add a new place">
+        <span class="btn-icon">➕</span>
+        <span id="addBtnText">Add Place (Click Map)</span>
+      </button>
+
+      <!-- Toggle Places List Sidebar -->
+      <button id="togglePlacesSidebarBtn" class="nav-btn" title="View all custom places">
+        <span>📍 Places (<span id="headerPlacesCount">4</span>)</span>
+      </button>
+
+      <!-- Center / Reset View -->
+      <button id="resetViewBtn" class="nav-btn" title="Center on Campus Boundary">
+        <span>🎯 Fit Boundary</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- App Body Layout -->
+  <div class="app-layout">
+    
+    <!-- Collapsible Places Drawer -->
+    <aside id="placesSidebar" class="places-drawer">
+      <div class="drawer-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.1rem;">📍</span>
+          <h2 style="font-size: 1rem; font-weight: 700; color: #fff;">Campus Places (<span id="drawerPlacesCount">4</span>)</h2>
+        </div>
+        <button id="closeDrawerBtn" class="close-icon-btn">&times;</button>
+      </div>
+
+      <div class="drawer-actions">
+        <button id="addNewPlaceDrawerBtn" class="drawer-btn-add">➕ Add New Place</button>
+        <button id="clearAllPlacesBtn" class="drawer-btn-clear">Clear All</button>
+      </div>
+
+      <div id="placesListContainer" class="drawer-list">
+        <!-- Injected via JS -->
+      </div>
+    </aside>
+
+    <!-- Map Canvas -->
+    <main class="map-container">
+      <div id="campus-map"></div>
+
+      <!-- Click Instruction Banner when Add Mode is ON -->
+      <div id="addInstructionBanner" class="add-instruction-banner">
+        <span>🎯 Click anywhere on the satellite to place a marker</span>
+        <button id="cancelAddModeBtn" class="banner-cancel-btn">Cancel</button>
+      </div>
+
+      <!-- Toast Notification for Auto-Save -->
+      <div id="saveToast" class="save-toast">
+        <span style="color: #10b981;">✓</span>
+        <span id="toastMsg">Saved directly to data/nie_north.geojson</span>
+      </div>
+
+      <!-- Bottom Floating Controls -->
+      <div class="floating-bottom-controls">
+        <button id="toggleMaskBtn" class="floating-pill-btn active">
+          <span>Surroundings: Frosted Dim</span>
+        </button>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Add / Edit Place Modal -->
+  <div id="placeModalBackdrop" class="modal-backdrop">
+    <div class="place-modal">
+      <div class="modal-header">
+        <h3 id="modalHeading" class="modal-title">Add New Place</h3>
+        <button id="closeModalBtn" class="close-icon-btn">&times;</button>
+      </div>
+
+      <form id="placeForm" class="modal-form">
+        <input type="hidden" id="placeId">
+        <input type="hidden" id="placeLat">
+        <input type="hidden" id="placeLng">
+
+        <div class="form-group">
+          <label for="placeName">Place / Building Name <span class="required">*</span></label>
+          <input type="text" id="placeName" class="form-input" placeholder="e.g., Central Library, CSE Department..." required autocomplete="off">
+        </div>
+
+        <div class="form-row">
+          <!-- Category Presets Dropdown -->
+          <div class="form-group" style="flex: 1;">
+            <label for="placeCategory">Category Preset</label>
+            <select id="placeCategory" class="form-select">
+              <option value="Library">📚 Library & Research</option>
+              <option value="Academic">🎓 Academic / Dept Block</option>
+              <option value="Classroom">🏫 Lecture Hall / Classroom</option>
+              <option value="Lab">🔬 Engineering Lab / Workshop</option>
+              <option value="Admin">🏛️ Administration & Dean</option>
+              <option value="Food">☕ Canteen & Dining</option>
+              <option value="Hostel">🏠 Hostel / Residence</option>
+              <option value="Sports">🏆 Sports & Ground</option>
+              <option value="Medical">🏥 Healthcare & Clinic</option>
+              <option value="Auditorium">🎭 Auditorium / Seminar Hall</option>
+              <option value="Hub">💡 Student Hub / Innovation</option>
+              <option value="Facility">🚗 Parking Plaza & EV</option>
+              <option value="Gate">🛡️ Main Entrance & Security</option>
+              <option value="Custom">📍 Custom Place</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="width: 150px;">
+            <label for="placeColor">Marker Color</label>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <select id="placeColor" class="form-select" style="flex: 1;">
+                <option value="#00f0ff">🔷 Cyan</option>
+                <option value="#0ea5e9">🔵 Sky Blue</option>
+                <option value="#3b82f6">🔹 Blue</option>
+                <option value="#1d4ed8">🌌 Royal Blue</option>
+                <option value="#6366f1">🔮 Indigo</option>
+                <option value="#8b5cf6">💜 Purple</option>
+                <option value="#a855f7">🟣 Violet</option>
+                <option value="#d946ef">💖 Fuchsia</option>
+                <option value="#ec4899">🌸 Pink</option>
+                <option value="#f43f5e">🌹 Rose</option>
+                <option value="#ef4444">🔴 Red</option>
+                <option value="#f97316">🟠 Orange</option>
+                <option value="#f59e0b">🍊 Amber</option>
+                <option value="#eab308">🟡 Yellow</option>
+                <option value="#84cc16">🍏 Lime</option>
+                <option value="#22c55e">🟢 Neon Green</option>
+                <option value="#10b981">🌲 Emerald</option>
+                <option value="#14b8a6">❇️ Mint Teal</option>
+                <option value="#06b6d4">💎 Turquoise</option>
+                <option value="#0284c7">🌊 Ocean</option>
+                <option value="#b45309">🟤 Bronze</option>
+                <option value="#78350f">🌰 Maroon</option>
+                <option value="#64748b">🩶 Slate</option>
+                <option value="#f8fafc">⚪ White</option>
+              </select>
+              <input type="color" id="placeCustomColorPicker" class="custom-color-input" value="#00f0ff" title="Pick any custom color">
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Color Palette Swatches -->
+        <div class="form-group">
+          <label style="font-size: 0.72rem; color: var(--text-muted);">Quick Color Swatches</label>
+          <div id="colorSwatchesContainer" class="color-swatches-grid">
+            <!-- Injected or generated in HTML -->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="placeBadge">Short Badge (Optional)</label>
+          <input type="text" id="placeBadge" class="form-input" placeholder="e.g., Block A, 24/7, Floor 2">
+        </div>
+
+        <div class="form-group">
+          <label for="placeDesc">Description / Details (Optional)</label>
+          <textarea id="placeDesc" class="form-textarea" rows="3" placeholder="Add room numbers, operational hours, or facility details..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="coords-display">
+            <span>Coordinates:</span>
+            <span id="coordsDisplayVal" style="font-family: monospace; color: #00f0ff;">12.3725, 76.5862</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="deletePlaceBtn" class="btn-delete" style="display: none;">Delete Place</button>
+          <div style="flex: 1;"></div>
+          <button type="button" id="cancelModalBtn" class="btn-secondary">Cancel</button>
+          <button type="submit" id="savePlaceBtn" class="btn-submit">Save Place</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floor-by-Floor Indoor Plan Modal (Option C) -->
+  <div id="floorPlanModalBackdrop" class="modal-backdrop">
+    <div class="floor-plan-modal">
+      
+      <!-- Floor Plan Header -->
+      <div class="floor-modal-header">
+        <div class="floor-title-area">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="fpBuildingIcon" style="font-size: 1.4rem;">🏢</span>
+            <div>
+              <h2 id="fpBuildingName" class="floor-building-title">MB block</h2>
+              <span id="fpBuildingCategory" class="floor-building-category">Academic Block</span>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="open3dFromFpBtn" class="fp-action-btn" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); border-color: #a855f7; color: #fff;">🧊 3D Live View</button>
+          <button id="fpAddRoomBtn" class="fp-action-btn primary">➕ Add Room / Lab</button>
+          <button id="closeFloorPlanModalBtn" class="close-icon-btn">&times;</button>
+        </div>
+      </div>
+
+      <!-- Floor Level Selector Tabs -->
+      <div class="floor-tabs-bar">
+        <div class="floor-tabs-scroll" id="floorTabsList">
+          <!-- Dynamically Injected: Ground Floor, 1st Floor, etc. -->
+        </div>
+        <button id="addFloorLevelBtn" class="add-floor-tab-btn" title="Add a new floor level">➕ New Floor</button>
+      </div>
+
+      <!-- Filter & Search Sub-Bar -->
+      <div class="floor-filter-bar">
+        <div class="floor-search-box">
+          <span style="font-size: 0.85rem; color: #64748b;">🔍</span>
+          <input type="text" id="roomSearchInput" placeholder="Search room no, lab, faculty..." autocomplete="off">
+        </div>
+        <div class="floor-type-pills" id="roomTypeFilterPills">
+          <button class="type-pill active" data-filter="all">All</button>
+          <button class="type-pill" data-filter="Classroom">🏫 Classrooms</button>
+          <button class="type-pill" data-filter="Lab">🔬 Labs</button>
+          <button class="type-pill" data-filter="Faculty">👨‍🏫 Faculty</button>
+          <button class="type-pill" data-filter="Admin">🏛️ Admin</button>
+          <button class="type-pill" data-filter="Facility">🚻 Facilities</button>
+        </div>
+      </div>
+
+      <!-- Rooms Grid Layout -->
+      <div class="floor-body-content">
+        <div id="roomsGridContainer" class="rooms-grid">
+          <!-- Dynamically Injected Room Cards -->
+        </div>
+      </div>
+
+      <!-- Floor Plan Footer Info -->
+      <div class="floor-modal-footer">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.76rem; color: var(--text-muted);">
+          <span>💡 Tip: Click any room to view details or report a lost item in that specific room.</span>
+        </div>
+        <button id="deleteFloorLevelBtn" class="fp-delete-floor-btn" title="Delete this floor">🗑️ Delete Floor</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Add / Edit Single Room Dialog -->
+  <div id="roomEditModalBackdrop" class="modal-backdrop" style="z-index: 2200;">
+    <div class="place-modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3 id="roomModalHeading" class="modal-title">Add Room / Lab</h3>
+        <button id="closeRoomModalBtn" class="close-icon-btn">&times;</button>
+      </div>
+      <form id="roomForm" class="modal-form">
+        <input type="hidden" id="editRoomId">
+
+        <div class="form-row">
+          <div class="form-group" style="width: 120px;">
+            <label for="roomNumber">Room No <span class="required">*</span></label>
+            <input type="text" id="roomNumber" class="form-input" placeholder="e.g. 204, G-02" required autocomplete="off">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="roomType">Room Type</label>
+            <select id="roomType" class="form-select">
+              <option value="Classroom">🏫 Classroom / Lecture</option>
+              <option value="Lab">🔬 Engineering Lab</option>
+              <option value="Faculty">👨‍🏫 Faculty / Staff Cabin</option>
+              <option value="Seminar">🎭 Seminar Hall / Auditorium</option>
+              <option value="Admin">🏛️ Office / Department Desk</option>
+              <option value="Facility">🚻 Washroom / Utility</option>
+              <option value="Other">📍 Other Room</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="roomName">Room / Lab Name <span class="required">*</span></label>
+          <input type="text" id="roomName" class="form-input" placeholder="e.g. Cloud Computing Lab, CSE 4th Sem A" required autocomplete="off">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label for="roomCapacity">Capacity (Optional)</label>
+            <input type="text" id="roomCapacity" class="form-input" placeholder="e.g. 60 Students">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label for="roomBadge">Badge / Tag (Optional)</label>
+            <input type="text" id="roomBadge" class="form-input" placeholder="e.g. AC, Projector">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="roomNotes">Description / Notes</label>
+          <textarea id="roomNotes" class="form-textarea" rows="2" placeholder="e.g. Lab in-charge name, timings, or key features..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="deleteRoomBtn" class="btn-delete" style="display: none;">Delete Room</button>
+          <div style="flex: 1;"></div>
+          <button type="button" id="cancelRoomModalBtn" class="btn-secondary">Cancel</button>
+          <button type="submit" class="btn-submit">Save Room</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3D Building Live Viewer Modal -->
+  <div id="building3dModalBackdrop" class="modal-backdrop">
+    <div class="building-3d-modal">
+      
+      <!-- 3D Viewer Header -->
+      <div class="floor-modal-header" style="background: rgba(10, 15, 29, 0.95);">
+        <div class="floor-title-area">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.4rem;">🧊</span>
+            <div>
+              <h2 id="b3dTitle" class="floor-building-title">MB block — 3D Live Model</h2>
+              <span id="b3dSubtitle" class="floor-building-category">Interactive Architectural Cutaway &bull; Orbit 360°</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3D Viewport Controls -->
+        <div class="b3d-controls-toolbar">
+          <div class="b3d-control-item">
+            <label for="explodeSlider">💥 Explode Floors:</label>
+            <input type="range" id="explodeSlider" min="0" max="100" value="0" class="b3d-slider">
+          </div>
+
+          <button id="toggleWireframeBtn" class="fp-action-btn" title="Toggle Glass / Solid">🪟 Glass View</button>
+          <button id="reset3dCameraBtn" class="fp-action-btn" title="Reset Camera View">🎯 Reset Cam</button>
+          <button id="close3dModalBtn" class="close-icon-btn">&times;</button>
+        </div>
+      </div>
+
+      <!-- 3D Canvas Viewport & Floating HUD -->
+      <div class="b3d-viewport-container" id="b3dViewportContainer">
+        <div id="threeCanvas"></div>
+
+        <!-- Floating Floor Navigator in 3D -->
+        <div class="b3d-floating-floors-panel" id="b3dFloorSelector">
+          <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Floor Focus</span>
+          <div class="b3d-floor-buttons" id="b3dFloorButtonsList">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+
+        <!-- 3D Hover / Click Tooltip HUD -->
+        <div id="b3dRoomHud" class="b3d-room-hud" style="display: none;">
+          <div class="hud-room-code" id="hudRoomCode">CR-201</div>
+          <div class="hud-room-name" id="hudRoomName">Lecture Hall</div>
+          <div class="hud-room-type" id="hudRoomType">Classroom &bull; 60 Seats</div>
+          <button id="hudLostFoundBtn" class="hud-action-btn">🔍 Report Lost Item Here</button>
+        </div>
+
+        <!-- 3D Navigation Guide Tip -->
+        <div class="b3d-nav-tip">
+          <span>🖱️ Left-Click + Drag to Rotate &bull; Right-Click to Pan &bull; Scroll to Zoom &bull; Click Rooms to Inspect</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Three.js & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- App Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

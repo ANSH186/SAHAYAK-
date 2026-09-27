@@ -1,0 +1,16 @@
+{
+  "name": "sahayak",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SAHAYAK — Lost & Found platform for National Institute of Engineering (NIE), Mysuru",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev --",
+    "build": "npm --prefix frontend run build",
+    "preview": "npm --prefix frontend run preview --",
+    "backend": "cd backend && ./.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "backend:seed": "cd backend && ./.venv/bin/python seed_data.py",
+    "backend:test": "cd backend && ./.venv/bin/pytest -v",
+    "install:all": "npm --prefix frontend install"
+  }
+}
+

@@ -28,6 +28,7 @@ Thumbs.db
 uploads/
 frontend.zip
 *.zip
+*.pt
 .vercel/
 frontend/dist/
 

@@ -1,0 +1,11 @@
+backend/tests/
+backend/yolov8n.pt
+frontend.zip
+*.zip
+*.pt
+.venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite
+scratch/

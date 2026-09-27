@@ -80,13 +80,14 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Unhandled Exception at {request.url.path}: {exc}", exc_info=True)
+    error_msg = str(exc) if (settings.DEBUG or os.environ.get("VERCEL")) else "An unexpected error occurred. Please try again or contact support."
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
             "data": None,
             "error": {
                 "code": "INTERNAL_SERVER_ERROR",
-                "message": "An unexpected error occurred. Please try again or contact support."
+                "message": error_msg
             },
             "meta": {}
         }
